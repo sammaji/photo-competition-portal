@@ -1,6 +1,5 @@
 import {
     createStyles,
-    Image,
     Container,
     Title,
     Button,
@@ -42,7 +41,6 @@ const useStyles = createStyles((theme) => ({
 
         [theme.fn.smallerThan("xs")]: {
             fontSize: rem(28),
-            fontWeight: 900,
         },
     },
 

@@ -1,18 +1,34 @@
 import { Route, Routes } from "react-router-dom";
 import { Hero } from "../components/Hero";
 import { AuthForm, AuthFormTypes } from "../components/AuthForm";
-import { Flex } from "@mantine/core";
+import { Flex, createStyles } from "@mantine/core";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import useToasts from "../hooks/useToast";
 import { AuthTypes } from "../types";
 
+const useStyles = createStyles((theme) => ({
+    flexCon: {
+        height: "100vh",
+    },
+}));
+
 function App() {
+    const { classes } = useStyles();
     const { successToast } = useToasts();
     const { user, signout } = useFirebaseAuth();
 
     return (
         <div className="App">
-            <Flex align={"center"} justify={"center"} h={"100vh"} w={"100vw"}>
+            {/* <button onClick={() => console.log(user)}>user</button>
+            <button onClick={() => signout()}>signout</button> */}
+            <Flex
+                className={classes.flexCon}
+                align={"center"}
+                justify={"center"}
+                direction={"column"}
+                h={"100dvh"}
+                w={"100vw"}
+            >
                 <Routes>
                     <Route path="/" element={<Hero />} />
                     <Route

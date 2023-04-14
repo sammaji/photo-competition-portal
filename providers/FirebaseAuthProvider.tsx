@@ -58,7 +58,9 @@ export default function FirebaseAuthProvider({
             props.authType === AuthTypes.GOOGLE ||
             props.authType === AuthTypes.GITHUB
         ) {
-            signInWithRedirect(auth, props.provider);
+            signInWithRedirect(auth, props.provider).then(() => {
+                setUserChanged((prevState) => !prevState);
+            });
             getRedirectResult(auth, (result: UserCredential) => {
                 if (result.user) {
                     console.log(result.user);
@@ -93,7 +95,9 @@ export default function FirebaseAuthProvider({
             props.authType === AuthTypes.GITHUB
         ) {
             console.log("logging");
-            signInWithRedirect(auth, props.provider);
+            signInWithRedirect(auth, props.provider).then(() => {
+                setUserChanged((prevState) => !prevState);
+            });
             getRedirectResult(auth, (result: UserCredential) => {
                 if (result.user) {
                     setUser(user);
