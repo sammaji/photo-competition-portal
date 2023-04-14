@@ -12,6 +12,8 @@ import {
 } from "@mantine/core";
 import { BsCheck } from "react-icons/bs";
 import image from "./image.svg";
+import useFirebaseAuth from "../hooks/useFirebaseAuth";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
     inner: {
@@ -23,11 +25,11 @@ const useStyles = createStyles((theme) => ({
 
     content: {
         maxWidth: rem(480),
-        marginRight: `calc(${theme.spacing.xl} * 3)`,
+        // marginRight: `calc(${theme.spacing.xl} * 3)`,
 
         [theme.fn.smallerThan("xs")]: {
             maxWidth: "100%",
-            marginRight: 0,
+            // marginRight: 0,
         },
     },
 
@@ -68,6 +70,9 @@ const useStyles = createStyles((theme) => ({
 
 export function Hero() {
     const { classes } = useStyles();
+    const { user, signout } = useFirebaseAuth();
+    const navigate = useNavigate();
+
     return (
         <div>
             <Container>
@@ -112,24 +117,49 @@ export function Hero() {
                         </List>
 
                         <Group mt={30}>
-                            <Button
-                                radius="xl"
-                                size="md"
-                                className={classes.control}
-                            >
-                                Register
-                            </Button>
-                            <Button
-                                variant="default"
-                                radius="xl"
-                                size="md"
-                                className={classes.control}
-                            >
-                                View Github
-                            </Button>
+                            {user ? (
+                                <>
+                                    <Button
+                                        radius="xl"
+                                        size="md"
+                                        className={classes.control}
+                                        disabled
+                                    >
+                                        Register
+                                    </Button>
+                                    <Button
+                                        variant="default"
+                                        radius="xl"
+                                        size="md"
+                                        className={classes.control}
+                                        onClick={() => signout()}
+                                    >
+                                        Sign Out
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button
+                                        radius="xl"
+                                        size="md"
+                                        className={classes.control}
+                                        onClick={() => navigate("/login")}
+                                    >
+                                        Login
+                                    </Button>
+                                    <Button
+                                        variant="default"
+                                        radius="xl"
+                                        size="md"
+                                        className={classes.control}
+                                        onClick={() => navigate("/signup")}
+                                    >
+                                        Create Account
+                                    </Button>
+                                </>
+                            )}
                         </Group>
                     </div>
-                    {/* <Image src={src} className={classes.image} /> */}
                 </div>
             </Container>
         </div>

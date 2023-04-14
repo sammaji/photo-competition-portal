@@ -14,10 +14,17 @@ import {
 } from "@mantine/core";
 import { GithubButton, GoogleButton } from "./SocialButtons";
 import { useNavigate } from "react-router-dom";
-import { FirebaseAuthParams } from "../types";
+import { AuthTypes, FirebaseAuthParams } from "../types";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
+import { githubAuthProvider, googleAuthProvider } from "../firebase/init";
+import { useState } from "react";
 
-export function AuthForm({ type }: { type: "Login" | "Register" }) {
+export enum AuthFormTypes {
+    LOGIN,
+    SIGNUP,
+}
+
+export function AuthForm({ authFormType }: { authFormType: AuthFormTypes }) {
     const navigate = useNavigate();
     const form = useForm({
         initialValues: {
@@ -37,21 +44,49 @@ export function AuthForm({ type }: { type: "Login" | "Register" }) {
         },
     });
 
-    const { user, signup, login } = useFirebaseAuth();
+    const { signup, login } = useFirebaseAuth();
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const handleManualAuth = () => {};
-    const handleGoogleAuth = () => {};
-    const handleGithubAuth = () => {};
+    const handleAuth = (
+        authFormType: AuthFormTypes,
+        values: FirebaseAuthParams
+    ) => {
+        setLoading(true);
+        setTimeout(() => setLoading(false), 2000);
+
+        if (authFormType === AuthFormTypes.LOGIN) {
+            login(values);
+        } else if (authFormType === AuthFormTypes.SIGNUP) {
+            signup(values);
+        }
+    };
 
     return (
         <Paper radius="md" p="xl" w={"400px"} withBorder>
             <Text size="lg" weight={500}>
-                {type} with
+                {authFormType === AuthFormTypes.LOGIN
+                    ? "Login"
+                    : "Create Account"}{" "}
+                with
             </Text>
 
             <Group grow mb="md" mt="md">
-                <GoogleButton>{`Google`}</GoogleButton>
-                <GithubButton>{`Github`}</GithubButton>
+                <GoogleButton
+                    onClick={() =>
+                        handleAuth(authFormType, {
+                            authType: AuthTypes.GOOGLE,
+                            provider: googleAuthProvider,
+                        })
+                    }
+                >{`Google`}</GoogleButton>
+                <GithubButton
+                    onClick={() =>
+                        handleAuth(authFormType, {
+                            authType: AuthTypes.GITHUB,
+                            provider: githubAuthProvider,
+                        })
+                    }
+                >{`Github`}</GithubButton>
             </Group>
 
             <Divider
@@ -62,11 +97,16 @@ export function AuthForm({ type }: { type: "Login" | "Register" }) {
 
             <form
                 onSubmit={form.onSubmit((values) => {
-                    console.log(values);
+                    handleAuth(authFormType, {
+                        name: values.name,
+                        authType: AuthTypes.MANUAL,
+                        email: values.email,
+                        password: values.password,
+                    });
                 })}
             >
                 <Stack>
-                    {type === "Register" && (
+                    {authFormType === AuthFormTypes.SIGNUP && (
                         <TextInput
                             required
                             label="Name"
@@ -115,7 +155,7 @@ export function AuthForm({ type }: { type: "Login" | "Register" }) {
                         radius="md"
                     />
 
-                    {type === "Register" && (
+                    {authFormType === AuthFormTypes.SIGNUP && (
                         <Checkbox
                             label="I accept terms and conditions"
                             checked={form.values.terms}
@@ -136,16 +176,20 @@ export function AuthForm({ type }: { type: "Login" | "Register" }) {
                         color="dimmed"
                         size="xs"
                         onClick={() => {
-                            if (type === "Login") navigate("/signup");
-                            else if (type === "Register") navigate("/login");
+                            if (authFormType === AuthFormTypes.LOGIN)
+                                navigate("/signup");
+                            else if (authFormType === AuthFormTypes.SIGNUP)
+                                navigate("/login");
                         }}
                     >
-                        {type === "Register"
+                        {authFormType === AuthFormTypes.SIGNUP
                             ? "Already have an account? Login"
                             : "Don't have an account? Register"}
                     </Anchor>
-                    <Button type="submit" radius="xl">
-                        {upperFirst(type)}
+                    <Button type="submit" disabled={loading} radius="xl">
+                        {authFormType === AuthFormTypes.LOGIN
+                            ? "Login"
+                            : "Create Account"}
                     </Button>
                 </Group>
             </form>
