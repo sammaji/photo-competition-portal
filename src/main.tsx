@@ -7,16 +7,17 @@ import { BrowserRouter } from "react-router-dom";
 import { Notifications } from "@mantine/notifications";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+    <BrowserRouter>
         <MantineProvider
             theme={{ colorScheme: "light" }}
             withGlobalStyles
             withNormalizeCSS
         >
             <Notifications />
-            <BrowserRouter>
-                <FirebaseAuthProvider>
-                    <App />
-                </FirebaseAuthProvider>
-            </BrowserRouter>
+
+            <FirebaseAuthProvider>
+                <App />
+            </FirebaseAuthProvider>
         </MantineProvider>
+    </BrowserRouter>
 );
