@@ -13,6 +13,14 @@ import {
     AiOutlineCheck,
     AiOutlineFileImage,
 } from "react-icons/ai";
+import { uploadImage } from "../firebase/storage_bucket";
+import useFirebaseAuth from "../hooks/useFirebaseAuth";
+import FirebaseAuthProvider from "../providers/FirebaseAuthProvider";
+import useToasts from "../hooks/useToast";
+import { useEffect, useState } from "react";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { storageBucket } from "../firebase/init";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
     buttonContainer: {
@@ -20,6 +28,7 @@ const useStyles = createStyles((theme) => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end",
+        gap: "1rem",
     },
     main: {
         display: "flex",
@@ -51,6 +60,17 @@ const useStyles = createStyles((theme) => ({
 export default function Submission(props: Partial<DropzoneProps>) {
     const theme = useMantineTheme();
     const { classes } = useStyles();
+    const { user } = useFirebaseAuth();
+    const { failureToast } = useToasts();
+
+    const [title, setTitle] = useState<String>(
+        "Drag images here or click to select files"
+    );
+    const [desc, setDesc] = useState<String>(
+        "Attach as many files as you like, each file should not exceed 5mb"
+    );
+
+    const navigate = useNavigate();
 
     return (
         <div className={classes.main}>
@@ -62,9 +82,15 @@ export default function Submission(props: Partial<DropzoneProps>) {
                 ducimus tempore dolor?
             </Text>
             <Dropzone
-                onDrop={(files) => console.log("accepted files", files)}
-                onReject={(files) => console.log("rejected files", files)}
-                maxSize={3 * 1024 ** 2}
+                onDrop={(files) => {
+                    uploadImage(user?.uid || "anonymous", files[0]);
+                    setTitle(files[0].name);
+                }}
+                onReject={() => {
+                    setTitle("Invalid File")
+                    failureToast("File upload failed");
+                }}
+                maxSize={5 * 1024 ** 2}
                 accept={IMAGE_MIME_TYPE}
                 {...props}
             >
@@ -99,16 +125,25 @@ export default function Submission(props: Partial<DropzoneProps>) {
 
                     <div>
                         <Text size="xl" inline>
-                            Drag images here or click to select files
+                            {title}
                         </Text>
                         <Text size="sm" color="dimmed" inline mt={7}>
-                            Attach as many files as you like, each file should
-                            not exceed 5mb
+                            {desc}
                         </Text>
                     </div>
                 </Group>
             </Dropzone>
             <div className={classes.buttonContainer}>
+                <Button
+                    radius="xl"
+                    size="md"
+                    variant="default"
+                    onClick={() => {
+                        navigate("/submissions");
+                    }}
+                >
+                    View Submissions
+                </Button>
                 <Button radius="xl" size="md" className={classes.control}>
                     Submit
                 </Button>

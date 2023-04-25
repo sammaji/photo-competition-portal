@@ -7,6 +7,8 @@ import {
     TextInput,
     Stack,
     Checkbox,
+    Autocomplete,
+    Select,
 } from "@mantine/core";
 import type { ReactNode } from "react";
 import { useForm } from "@mantine/form";
@@ -18,6 +20,11 @@ const useStyles = createStyles((theme) => ({
         [theme.fn.smallerThan("xs")]: {
             flex: 1,
         },
+    },
+
+    branchGroup: {
+        display: "flex",
+        gap: "1rem",
     },
 }));
 
@@ -36,13 +43,15 @@ export default function RegistrationModalButton({
             regEmail: user?.email || "",
             regNo: "",
             terms: true,
+            branch: "",
+            year: "",
         },
 
         validate: {
             regEmail: (value: string) =>
                 /^\S+@\S+$/.test(value) ? null : "Invalid email",
             regNo: (value: string) =>
-                /^\d{10,15}$/.test(value) ? "Invalid Registation Number" : null,
+                /^\d{10,15}$/.test(value) ? null: "Invalid Registation Number",
             terms: (value: boolean) =>
                 !value ? "Must agree to terms and conditions" : null,
         },
@@ -53,13 +62,17 @@ export default function RegistrationModalButton({
         regEmail: string;
         regNo: string;
         terms: boolean;
+        branch: string;
+        year: string;
     }) => {
         if (user)
             registerUser(
                 user,
                 Number(values.regNo),
                 values.regEmail,
-                values.regName
+                values.regName,
+                values.branch,
+                values.year
             );
     };
 
@@ -119,6 +132,31 @@ export default function RegistrationModalButton({
                             }
                             radius="md"
                         />
+
+                        <div className={classes.branchGroup}>
+                            <Select
+                                required
+                                label="Branch"
+                                placeholder="e.g. B. Tech"
+                                data={[
+                                    { value: "B.Tech.", label: "B.Tech." },
+                                    { value: "M. Tech.", label: "M. Tech." },
+                                ]}
+                                {...form.getInputProps("branch")}
+                            />
+                            <Select
+                                required
+                                label="Year"
+                                placeholder="e.g. Second"
+                                data={[
+                                    { value: "First", label: "First" },
+                                    { value: "Second", label: "Second" },
+                                    { value: "Third", label: "Third" },
+                                    { value: "Fourth", label: "Fourth" },
+                                ]}
+                                {...form.getInputProps("year")}
+                            />
+                        </div>
 
                         <Checkbox
                             label="I accept the terms and conditions"

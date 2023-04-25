@@ -34,20 +34,22 @@ const updateUser = async (user: User) => {
     );
 };
 
-export const readUser = () => {};
+export const readUser = () => { };
 
-export const deleteUser = () => {};
+export const deleteUser = () => { };
 
 export const registerUser = (
     user: User,
     regNo: number,
     regEmail: string,
-    regName: string
+    regName: string,
+    branch: string,
+    year: string
 ) => {
     const docRef = doc(firestore, "user", user.uid);
     const { successToast } = useToasts();
 
-    setDoc(docRef, { regEmail, regName, regNo }, { merge: true }).then(() => {
+    setDoc(docRef, { regEmail, regName, regNo, branch, year }, { merge: true }).then(() => {
         successToast("Successfully registered 🤝");
     });
 };
