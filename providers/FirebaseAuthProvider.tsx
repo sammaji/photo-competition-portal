@@ -18,6 +18,7 @@ import {
 import { auth } from "../firebase/init";
 import { useNavigate } from "react-router-dom";
 import useToasts from "../hooks/useToast";
+import { createUser } from "../firebase/firebase";
 
 export const FirebaseAuthContext = createContext<FirebaseAuthContextProps>(
     null!
@@ -38,8 +39,10 @@ export default function FirebaseAuthProvider({
             if (user) {
                 setUser(() => user);
                 navigate("/");
+
                 if (user.displayName)
                     successToast(`Welcome ${user.displayName}`);
+                // createUser(user)
             }
         });
         return unsubscribe;
@@ -51,6 +54,7 @@ export default function FirebaseAuthProvider({
                 (userCredential: UserCredential) => {
                     if (userCredential.user) {
                         navigate("/");
+                        createUser(userCredential.user);
                     }
                 }
             );
@@ -61,12 +65,10 @@ export default function FirebaseAuthProvider({
             signInWithRedirect(auth, props.provider).then(() => {
                 setUserChanged((prevState) => !prevState);
             });
-            getRedirectResult(auth, (result: UserCredential) => {
-                if (result.user) {
-                    console.log(result.user);
+            getRedirectResult(auth).then((result: UserCredential | null) => {
+                console.log("redirecting ...");
+                if (result && result.user) {
                     setUser(result.user);
-                    successToast("Account successfully created", "Thank you");
-                    navigate("/login");
                 }
             });
         }
@@ -87,9 +89,9 @@ export default function FirebaseAuthProvider({
                     updateProfile(userCredential.user, {
                         displayName: props.name,
                     });
+                    createUser(userCredential.user);
                 }
             });
-            // login(props);
         } else if (
             props.authType === AuthTypes.GOOGLE ||
             props.authType === AuthTypes.GITHUB
@@ -99,10 +101,6 @@ export default function FirebaseAuthProvider({
                 setUserChanged((prevState) => !prevState);
             });
             getRedirectResult(auth, (result: UserCredential) => {
-                if (result.user) {
-                    setUser(user);
-                    successToast("Successfully logged in!", "Welcome");
-                }
                 navigate("/");
             });
         }
