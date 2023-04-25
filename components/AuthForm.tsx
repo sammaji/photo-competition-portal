@@ -37,10 +37,8 @@ export function AuthForm({ authFormType }: { authFormType: AuthFormTypes }) {
         validate: {
             email: (value: string) =>
                 /^\S+@\S+$/.test(value) ? null : "Invalid email",
-            password: (value: string) =>
-                value.length <= 6
-                    ? "Password should include at least 6 characters"
-                    : null,
+            terms: (value: boolean) =>
+                !value ? "Must agree to terms and conditions" : null,
         },
     });
 
@@ -63,7 +61,9 @@ export function AuthForm({ authFormType }: { authFormType: AuthFormTypes }) {
 
     return (
         <Paper radius="md" p="xl" w={"400px"} withBorder>
-            <Text size="lg" weight={500}>Continue with</Text>
+            <Text size="lg" weight={500}>
+                Continue with
+            </Text>
 
             <Group grow mb="md" mt="md">
                 <GoogleButton
@@ -152,7 +152,7 @@ export function AuthForm({ authFormType }: { authFormType: AuthFormTypes }) {
 
                     {authFormType === AuthFormTypes.SIGNUP && (
                         <Checkbox
-                            label="I accept terms and conditions"
+                            label="I accept the terms and conditions"
                             checked={form.values.terms}
                             onChange={(event) =>
                                 form.setFieldValue(

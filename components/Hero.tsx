@@ -13,6 +13,7 @@ import { BsCheck } from "react-icons/bs";
 import image from "./image.svg";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import { useNavigate } from "react-router-dom";
+import RegistrationModalButton from "./RegistrationModal";
 
 const useStyles = createStyles((theme) => ({
     inner: {
@@ -49,21 +50,6 @@ const useStyles = createStyles((theme) => ({
             flex: 1,
         },
     },
-
-    // image: {
-    //     flex: 1,
-
-    //     [theme.fn.smallerThan("sm")]: {
-    //         display: "none",
-    //     },
-    // },
-
-    // highlight: {
-    //   position: 'relative',
-    //   backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background,
-    //   borderRadius: theme.radius.sm,
-    //   padding: `${rem(4)} ${rem(12)}`,
-    // },
 }));
 
 export function Hero() {
@@ -117,14 +103,9 @@ export function Hero() {
                         <Group mt={30}>
                             {user ? (
                                 <>
-                                    <Button
-                                        radius="xl"
-                                        size="md"
-                                        className={classes.control}
-                                        disabled
-                                    >
+                                    <RegistrationModalButton>
                                         Register
-                                    </Button>
+                                    </RegistrationModalButton>
                                     <Button
                                         variant="default"
                                         radius="xl"
