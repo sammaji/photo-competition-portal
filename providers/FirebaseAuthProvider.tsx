@@ -61,11 +61,11 @@ export default function FirebaseAuthProvider({
             signInWithEmailAndPassword(auth, props.email, props.password)
                 .then((userCredential: UserCredential) => {
                     if (userCredential && userCredential.user) {
-                        successToast(
-                            `Welcome ${
-                                userCredential.user.displayName || "User"
-                            }`
-                        );
+                        // successToast(
+                        //     `Welcome ${
+                        //         userCredential.user.displayName || "User"
+                        //     }`
+                        // );
                     }
                 })
                 .catch((error) => {
@@ -95,9 +95,9 @@ export default function FirebaseAuthProvider({
                         setUserChanged((prevState) => !prevState);
 
                         // welcome toast message
-                        successToast(
-                            `Welcome ${userCredential.user.displayName}`
-                        );
+                        // successToast(
+                        //     `Welcome ${userCredential.user.displayName}`
+                        // );
 
                         updateProfile(userCredential.user, {
                             displayName: props.name,

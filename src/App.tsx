@@ -28,7 +28,6 @@ function App() {
                 align={"center"}
                 justify={"center"}
                 direction={"column"}
-                h={"100dvh"}
                 w={"100vw"}
             >
                 <Routes>

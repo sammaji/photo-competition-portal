@@ -60,7 +60,7 @@ export function AuthForm({ authFormType }: { authFormType: AuthFormTypes }) {
     };
 
     return (
-        <Paper radius="md" p="xl" w={"400px"} withBorder>
+        <Paper radius="md" p="xl" withBorder>
             <Text size="lg" weight={500}>
                 Continue with
             </Text>

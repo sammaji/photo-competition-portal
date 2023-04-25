@@ -17,6 +17,8 @@ import RegistrationModalButton from "./RegistrationModal";
 
 const useStyles = createStyles((theme) => ({
     inner: {
+        marginTop: "1rem",
+        marginBottom: "1rem",
         display: "flex",
         justifyContent: "space-between",
         // paddingTop: `calc(${theme.spacing.xl} * 4)`,

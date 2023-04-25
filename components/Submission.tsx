@@ -6,6 +6,7 @@ import {
     Title,
     createStyles,
     Button,
+    Container,
 } from "@mantine/core";
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {
@@ -33,7 +34,10 @@ const useStyles = createStyles((theme) => ({
         alignItems: "center",
         justifyContent: "center",
         gap: "1rem",
+        height: "100%",
         maxWidth: "480px",
+        minWidth: "100%",
+        padding: "16px"
     },
     title: {
         width: "100%",
@@ -70,7 +74,7 @@ export default function Submission(props: Partial<DropzoneProps>) {
     const navigate = useNavigate();
 
     return (
-        <div className={classes.main}>
+        <Container className={classes.main}>
             <Title className={classes.title}>Your Submission</Title>
             <Text>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
@@ -136,7 +140,7 @@ export default function Submission(props: Partial<DropzoneProps>) {
                     size="md"
                     variant="default"
                     onClick={() => {
-                        navigate("/submissions");
+                        navigate("/submission");
                     }}
                 >
                     View Submissions
@@ -145,6 +149,6 @@ export default function Submission(props: Partial<DropzoneProps>) {
                     Submit
                 </Button>
             </div>
-        </div>
+        </Container>
     );
 }
