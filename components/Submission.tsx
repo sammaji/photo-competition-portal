@@ -34,9 +34,7 @@ const useStyles = createStyles((theme) => ({
         alignItems: "center",
         justifyContent: "center",
         gap: "1rem",
-        height: "100%",
         maxWidth: "480px",
-        minWidth: "100%",
         padding: "16px"
     },
     title: {
