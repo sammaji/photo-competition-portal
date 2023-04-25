@@ -19,6 +19,7 @@ import { auth } from "../firebase/init";
 import { useLocation, useNavigate } from "react-router-dom";
 import useToasts from "../hooks/useToast";
 import { createUser } from "../firebase/firestore";
+import handleAuthException from "../firebase/auth_error_handler";
 
 export const FirebaseAuthContext = createContext<FirebaseAuthContextProps>(
     null!
@@ -31,22 +32,23 @@ export default function FirebaseAuthProvider({
 }) {
     const location = useLocation();
     const navigate = useNavigate();
-    const { successToast } = useToasts();
+    const { failureToast, successToast } = useToasts();
     const [user, setUser] = useState<User>();
     const [userChanged, setUserChanged] = useState<boolean>(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) setUser(() => user);
+
             if (
                 user &&
                 (location.pathname === "/" ||
                     location.pathname === "/login" ||
                     location.pathname === "/signup")
             ) {
-                setUser(() => user);
                 navigate("/");
                 if (user.displayName)
-                    successToast(`Welcome ${user.displayName}`);
+                    successToast(`Welcome ${user.displayName || "User"}`);
 
                 createUser(user);
             }
@@ -56,10 +58,19 @@ export default function FirebaseAuthProvider({
 
     const login = (props: FirebaseAuthParams) => {
         if (props.authType === AuthTypes.MANUAL) {
-            signInWithEmailAndPassword(auth, props.email, props.password).then(
-                (userCredential: UserCredential) => {
-                }
-            );
+            signInWithEmailAndPassword(auth, props.email, props.password)
+                .then((userCredential: UserCredential) => {
+                    if (userCredential && userCredential.user) {
+                        successToast(
+                            `Welcome ${
+                                userCredential.user.displayName || "User"
+                            }`
+                        );
+                    }
+                })
+                .catch((error) => {
+                    failureToast(handleAuthException(error.code));
+                });
         } else if (
             props.authType === AuthTypes.GOOGLE ||
             props.authType === AuthTypes.GITHUB
@@ -78,24 +89,28 @@ export default function FirebaseAuthProvider({
     const signup = (props: FirebaseAuthParams) => {
         console.log(props.authType);
         if (props.authType === AuthTypes.MANUAL) {
-            createUserWithEmailAndPassword(
-                auth,
-                props.email,
-                props.password
-            ).then((userCredential: UserCredential) => {
-                if (userCredential.user) {
-                    setUserChanged((prevState) => !prevState);
-                    successToast("Successfully logged in!", "Welcome");
-                    updateProfile(userCredential.user, {
-                        displayName: props.name,
-                    });
-                }
-            });
+            createUserWithEmailAndPassword(auth, props.email, props.password)
+                .then((userCredential: UserCredential) => {
+                    if (userCredential.user) {
+                        setUserChanged((prevState) => !prevState);
+
+                        // welcome toast message
+                        successToast(
+                            `Welcome ${userCredential.user.displayName}`
+                        );
+
+                        updateProfile(userCredential.user, {
+                            displayName: props.name,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    failureToast(handleAuthException(error.code));
+                });
         } else if (
             props.authType === AuthTypes.GOOGLE ||
             props.authType === AuthTypes.GITHUB
         ) {
-            console.log("logging");
             signInWithRedirect(auth, props.provider).then(() => {
                 setUserChanged((prevState) => !prevState);
             });

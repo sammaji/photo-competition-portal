@@ -6,6 +6,7 @@ import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import useToasts from "../hooks/useToast";
 import { AuthTypes } from "../types";
 import Submission from "../components/Submission";
+import UserSubmission from "../components/UserSubmission";
 
 const useStyles = createStyles((theme) => ({
     flexCon: {
@@ -46,6 +47,7 @@ function App() {
                     />
                     <Route path="/root/admin/:adminID" />
                     <Route path="/submit" element={<Submission />} />
+                    <Route path="/submission" element={<UserSubmission />} />
                 </Routes>
             </Flex>
         </div>
