@@ -5,6 +5,7 @@ import { Flex, createStyles } from "@mantine/core";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import useToasts from "../hooks/useToast";
 import { AuthTypes } from "../types";
+import Submission from "../components/Submission";
 
 const useStyles = createStyles((theme) => ({
     flexCon: {
@@ -44,7 +45,7 @@ function App() {
                         }
                     />
                     <Route path="/root/admin/:adminID" />
-                    <Route path="/submissions" />
+                    <Route path="/submit" element={<Submission />} />
                 </Routes>
             </Flex>
         </div>

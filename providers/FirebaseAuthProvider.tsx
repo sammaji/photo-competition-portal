@@ -38,7 +38,7 @@ export default function FirebaseAuthProvider({
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(() => user);
-                navigate("/");
+                // navigate("/");
 
                 if (user.displayName)
                     successToast(`Welcome ${user.displayName}`);
