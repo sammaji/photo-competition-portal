@@ -1,4 +1,5 @@
 import {
+    Alert,
     Button,
     Image,
     Stack,
@@ -9,8 +10,9 @@ import {
 } from "@mantine/core";
 import { getDownloadURL, list, listAll, ref } from "firebase/storage";
 import React, { useEffect, useState } from "react";
-import { storageBucket } from "../firebase/init";
+import { auth, storageBucket } from "../firebase/init";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
+import { UserCredential, onAuthStateChanged } from "firebase/auth";
 
 const useStyles = createStyles((theme) => ({
     buttonContainer: {
@@ -56,44 +58,52 @@ export default function UserSubmission() {
 
     useEffect(() => {
         console.log(user?.uid);
-        listAll(ref(storageBucket, `${user?.uid || "anonymous"}`)).then(
-            (result) => {
-                result.items.forEach((item) => {
-                    getDownloadURL(item).then((img_url) => {
-                        console.log(img_url);
-                        if (loading) {
-                            setLoading(false);
-                            setImg(img_url);
-                        }
-                    });
-                });
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                listAll(ref(storageBucket, `${user?.uid || "anonymous"}`)).then(
+                    (result) => {
+                        result.items.forEach((item) => {
+                            getDownloadURL(item).then((img_url) => {
+                                console.log(img_url);
+                                if (loading) {
+                                    setLoading(false);
+                                    setImg(img_url);
+                                }
+                            });
+                        });
 
-                // getDownloadURL(result.items[0]).then((img_url) => {
-                //     console.log(img_url);
-                //     setLoading(false);
-                //     setImg(img_url);
-                // });
+                        // getDownloadURL(result.items[0]).then((img_url) => {
+                        //     console.log(img_url);
+                        //     setLoading(false);
+                        //     setImg(img_url);
+                        // });
+                    }
+                );
             }
-        );
+        });
+        return unsubscribe;
     }, []);
 
     return (
         <div className={classes.main}>
             <Title className={classes.title}>Your Submission</Title>
-            <Text>This page shows your submission details.</Text>
+            <Alert>
+                *This page shows your submission details. Note that you can
+                submit only one image. Any new submission will delete this one.
+            </Alert>
 
             <Stack>
-                {loading && <Image src={img} height={200} width={200} />}
+                <Image src={img} height={200} width={"auto"} />
             </Stack>
-
+{/* 
             <Button
                 variant="default"
                 radius="xl"
                 size="md"
                 className={classes.control}
             >
-                Submit
-            </Button>
+                Refresh
+            </Button> */}
         </div>
     );
 }

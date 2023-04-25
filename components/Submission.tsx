@@ -15,11 +15,8 @@ import {
 } from "react-icons/ai";
 import { uploadImage } from "../firebase/storage_bucket";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
-import FirebaseAuthProvider from "../providers/FirebaseAuthProvider";
 import useToasts from "../hooks/useToast";
-import { useEffect, useState } from "react";
-import { getDownloadURL, listAll, ref } from "firebase/storage";
-import { storageBucket } from "../firebase/init";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
