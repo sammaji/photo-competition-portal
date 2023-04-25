@@ -1,24 +1,21 @@
 import type { User } from "firebase/auth";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { firestore } from "./init";
+import useToasts from "../hooks/useToast";
 
 export const createUser = async (user: User) => {
-    console.log("create user into firebase...");
     const docRef = doc(firestore, "user", user.uid);
     setDoc(
         docRef,
         {
-            email: user.uid,
+            email: user.email,
             name: user.displayName,
-            dateUpdated: Timestamp.now(),
+            isVerified: user.emailVerified,
         },
         { merge: true }
-    );
-
-    // update dateCreated if user does not exist
-    try {
-        await setDoc(docRef, { dateCreated: Timestamp.now() });
-    } catch {}
+    ).then(() => {
+        console.log("Successfully added entries");
+    });
 };
 
 /* use this if you know a user already exists */
@@ -37,19 +34,20 @@ const updateUser = async (user: User) => {
     );
 };
 
-const readUser = () => {};
+export const readUser = () => {};
 
-const deleteUser = () => {};
+export const deleteUser = () => {};
 
-const registerUser = (
+export const registerUser = (
     user: User,
     regNo: number,
     regEmail: string,
     regName: string
 ) => {
-    console.log("registering user ...");
-
     const docRef = doc(firestore, "user", user.uid);
+    const { successToast } = useToasts();
 
-    setDoc(docRef, { regEmail, regName, regNo }, { merge: true });
+    setDoc(docRef, { regEmail, regName, regNo }, { merge: true }).then(() => {
+        successToast("Successfully registered 🤝");
+    });
 };

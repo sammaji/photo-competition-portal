@@ -16,9 +16,9 @@ import {
     updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/init";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useToasts from "../hooks/useToast";
-import { createUser } from "../firebase/firebase";
+import { createUser } from "../firebase/firestore";
 
 export const FirebaseAuthContext = createContext<FirebaseAuthContextProps>(
     null!
@@ -29,6 +29,7 @@ export default function FirebaseAuthProvider({
 }: {
     children?: ReactNode;
 }) {
+    const location = useLocation();
     const navigate = useNavigate();
     const { successToast } = useToasts();
     const [user, setUser] = useState<User>();
@@ -36,13 +37,18 @@ export default function FirebaseAuthProvider({
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
+            if (
+                user &&
+                (location.pathname === "/" ||
+                    location.pathname === "/login" ||
+                    location.pathname === "/signup")
+            ) {
                 setUser(() => user);
-                // navigate("/");
-
+                navigate("/");
                 if (user.displayName)
                     successToast(`Welcome ${user.displayName}`);
-                // createUser(user)
+
+                createUser(user);
             }
         });
         return unsubscribe;
@@ -52,10 +58,6 @@ export default function FirebaseAuthProvider({
         if (props.authType === AuthTypes.MANUAL) {
             signInWithEmailAndPassword(auth, props.email, props.password).then(
                 (userCredential: UserCredential) => {
-                    if (userCredential.user) {
-                        navigate("/");
-                        createUser(userCredential.user);
-                    }
                 }
             );
         } else if (
@@ -66,7 +68,6 @@ export default function FirebaseAuthProvider({
                 setUserChanged((prevState) => !prevState);
             });
             getRedirectResult(auth).then((result: UserCredential | null) => {
-                console.log("redirecting ...");
                 if (result && result.user) {
                     setUser(result.user);
                 }
@@ -85,11 +86,9 @@ export default function FirebaseAuthProvider({
                 if (userCredential.user) {
                     setUserChanged((prevState) => !prevState);
                     successToast("Successfully logged in!", "Welcome");
-                    navigate("/");
                     updateProfile(userCredential.user, {
                         displayName: props.name,
                     });
-                    createUser(userCredential.user);
                 }
             });
         } else if (
@@ -99,9 +98,6 @@ export default function FirebaseAuthProvider({
             console.log("logging");
             signInWithRedirect(auth, props.provider).then(() => {
                 setUserChanged((prevState) => !prevState);
-            });
-            getRedirectResult(auth, (result: UserCredential) => {
-                navigate("/");
             });
         }
     };
