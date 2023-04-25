@@ -63,12 +63,7 @@ export function AuthForm({ authFormType }: { authFormType: AuthFormTypes }) {
 
     return (
         <Paper radius="md" p="xl" w={"400px"} withBorder>
-            <Text size="lg" weight={500}>
-                {authFormType === AuthFormTypes.LOGIN
-                    ? "Login"
-                    : "Create Account"}{" "}
-                with
-            </Text>
+            <Text size="lg" weight={500}>Continue with</Text>
 
             <Group grow mb="md" mt="md">
                 <GoogleButton
