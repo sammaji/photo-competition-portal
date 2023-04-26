@@ -8,7 +8,12 @@ import {
     Button,
     Container,
 } from "@mantine/core";
-import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import {
+    Dropzone,
+    DropzoneProps,
+    FileWithPath,
+    IMAGE_MIME_TYPE,
+} from "@mantine/dropzone";
 import {
     AiOutlineClose,
     AiOutlineCheck,
@@ -72,24 +77,31 @@ export default function Submission(props: Partial<DropzoneProps>) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!user) {
-            navigate("/signup");
-            failureToast("You need to be signed in to make submissions");
-        }
+        // if (!user) {
+        //     navigate("/signup");
+        //     failureToast("You need to be signed in to make submissions");
+        // }
     }, []);
+
+    // let submission_file: FileWithPath | null = null;
+
+    const [submissionFile, setSubmissionFile] = useState<FileWithPath | null>(null)
 
     return (
         <Container className={classes.main}>
             <Title className={classes.title}>Your Submission</Title>
             <Text>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
-                perspiciatis amet est quasi facilis placeat eligendi alias quam,
-                aliquam eos ut ipsum corrupti modi optio cupiditate illum
-                ducimus tempore dolor?
+                Submit the best nature image from your collection, you can
+                change the submitted image before the deadline, but note that,
+                you can submit <b>only one image</b> and the image must not use
+                any <b>filters or editing</b>, must not be a pirated image from
+                any website and it should be within the <b>limit of 5MB</b>. If
+                any of these conditions are violated, your response will not be
+                granted, and you will get disqualified from the competition.
             </Text>
             <Dropzone
                 onDrop={(files) => {
-                    uploadImage(user?.uid || "anonymous", files[0]);
+                    setSubmissionFile(files[0])
                     setTitle(files[0].name);
                 }}
                 onReject={() => {
@@ -150,7 +162,19 @@ export default function Submission(props: Partial<DropzoneProps>) {
                 >
                     View Submissions
                 </Button>
-                <Button radius="xl" size="md" className={classes.control}>
+                <Button
+                    radius="xl"
+                    size="md"
+                    className={classes.control}
+                    onClick={() => {
+                        console.log(submissionFile)
+                        if (submissionFile)
+                            uploadImage(
+                                user?.uid || "anonymous",
+                                submissionFile
+                            ).then(() => {navigate("/submission")})
+                    }}
+                >
                     Submit
                 </Button>
             </div>

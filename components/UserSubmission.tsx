@@ -62,10 +62,10 @@ export default function UserSubmission() {
     const { failureToast } = useToasts();
 
     useEffect(() => {
-        if (!user) {
-            navigate("/signup");
-            failureToast("You need to be signed in to view your submissions");
-        }
+        // if (!user) {
+        //     navigate("/signup");
+        //     failureToast("You need to be signed in to view your submissions");
+        // }
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {

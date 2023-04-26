@@ -1,4 +1,4 @@
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useTimeout } from "@mantine/hooks";
 import {
     Modal,
     Group,
@@ -9,11 +9,14 @@ import {
     Checkbox,
     Autocomplete,
     Select,
+    SelectProps,
 } from "@mantine/core";
-import type { ReactNode } from "react";
+import { useState, type ReactNode, useRef } from "react";
 import { useForm } from "@mantine/form";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import { registerUser } from "../firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import useToasts from "../hooks/useToast";
 
 const useStyles = createStyles((theme) => ({
     control: {
@@ -37,13 +40,16 @@ export default function RegistrationModalButton({
     const { user } = useFirebaseAuth();
     const [opened, { open, close }] = useDisclosure(false);
 
+    const navigate = useNavigate();
+    const { successToast, failureToast } = useToasts();
+
     const form = useForm({
         initialValues: {
             regName: user?.displayName || "",
             regEmail: user?.email || "",
             regNo: "",
             terms: true,
-            branch: "",
+            branch: "M. Tech.",
             year: "",
         },
 
@@ -51,7 +57,7 @@ export default function RegistrationModalButton({
             regEmail: (value: string) =>
                 /^\S+@\S+$/.test(value) ? null : "Invalid email",
             regNo: (value: string) =>
-                /^\d{10,15}$/.test(value) ? null: "Invalid Registation Number",
+                /^\d{10,15}$/.test(value) ? null : "Invalid Registation Number",
             terms: (value: boolean) =>
                 !value ? "Must agree to terms and conditions" : null,
         },
@@ -73,7 +79,15 @@ export default function RegistrationModalButton({
                 values.regName,
                 values.branch,
                 values.year
-            );
+            )
+                .then(() => {
+                    successToast("Successfully registered 🤝");
+                    navigate("/submit");
+                })
+                .catch((error) => {
+                    console.log(error)
+                    failureToast("Some unknown error occurred");
+                });
     };
 
     return (
@@ -149,10 +163,22 @@ export default function RegistrationModalButton({
                                 label="Year"
                                 placeholder="e.g. Second"
                                 data={[
-                                    { value: "First", label: "First" },
-                                    { value: "Second", label: "Second" },
-                                    { value: "Third", label: "Third" },
-                                    { value: "Fourth", label: "Fourth" },
+                                    {
+                                        value: "First",
+                                        label: "First",
+                                    },
+                                    {
+                                        value: "Second",
+                                        label: "Second",
+                                    },
+                                    {
+                                        value: "Third",
+                                        label: "Third",
+                                    },
+                                    {
+                                        value: "Fourth",
+                                        label: "Fourth",
+                                    },
                                 ]}
                                 {...form.getInputProps("year")}
                             />
@@ -170,7 +196,7 @@ export default function RegistrationModalButton({
                         />
                     </Stack>
                     <Button type="submit" radius="xl">
-                        Register
+                        Submit
                     </Button>
                 </form>
             </Modal>

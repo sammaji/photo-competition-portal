@@ -8,9 +8,9 @@ import {
     List,
     ThemeIcon,
     rem,
+    Image,
 } from "@mantine/core";
 import { BsCheck } from "react-icons/bs";
-import image from "./image.svg";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import { useNavigate } from "react-router-dom";
 import RegistrationModalButton from "./RegistrationModal";
@@ -65,14 +65,14 @@ export function Hero() {
                 <div className={classes.inner}>
                     <div className={classes.content}>
                         <Title className={classes.title}>
-                            Photography Competition
+                            মন মোর মেঘের সঙ্গী
                         </Title>
                         <Text color="dimmed" mt="md">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Vero debitis nobis error nostrum repudiandae
-                            quaerat veritatis consequatur cumque omnis sequi
-                            nemo, dolorum vitae adipisci magni neque voluptatum
-                            voluptate laudantium. Soluta?
+                            An intra-departmental photography competition where
+                            the topic is <b>“Nature’s Photography”</b> - post your best
+                            image you have captured that covers the vast and
+                            vibrant beauty of our land through the artificial
+                            lenses at our reach.
                         </Text>
 
                         <List
@@ -86,19 +86,17 @@ export function Hero() {
                             }
                         >
                             <List.Item>
-                                <b>Highlight 1</b> – Lorem ipsum dolor sit amet
-                                consectetur adipisicing elit. Vero debitis nobis
-                                error nostrum repudiandae quaerat
+                                <b>Date of Submission:</b> April 27th to April
+                                30th
                             </List.Item>
                             <List.Item>
-                                <b>Highlight 2</b> – Lorem ipsum dolor sit amet
-                                consectetur adipisicing elit. Vero debitis nobis
-                                error nostrum repudiandae quaerat
+                                <b>Exhibition & Awarding Event:</b> May 10th
                             </List.Item>
                             <List.Item>
-                                <b>Highlight 3</b> – Lorem ipsum dolor sit amet
-                                consectetur adipisicing elit. Vero debitis nobis
-                                error nostrum repudiandae quaerat
+                                Top 20 pictures will be showcased & the
+                                contenders will be <b>certified</b> and most
+                                importantly the best 3 contenders will receive{" "}
+                                <b>amazing prizes</b>.
                             </List.Item>
                         </List>
 
