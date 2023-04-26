@@ -42,8 +42,9 @@ export const registerUser = async (
     regName: string,
     branch: string,
     year: string,
+    rollNo: number
 ) => {
     const docRef = doc(firestore, "user", user.uid);
 
-    return setDoc(docRef, { regEmail, regName, regNo, branch, year }, { merge: true })
+    return setDoc(docRef, { regEmail, regName, regNo, branch, year, rollNo }, { merge: true })
 };

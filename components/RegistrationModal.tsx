@@ -51,12 +51,15 @@ export default function RegistrationModalButton({
             terms: true,
             branch: "M. Tech.",
             year: "",
+            rollNo: "",
         },
 
         validate: {
             regEmail: (value: string) =>
                 /^\S+@\S+$/.test(value) ? null : "Invalid email",
             regNo: (value: string) =>
+                /^\d{10,15}$/.test(value) ? null : "Invalid Registation Number",
+            rollNo: (value: string) =>
                 /^\d{10,15}$/.test(value) ? null : "Invalid Registation Number",
             terms: (value: boolean) =>
                 !value ? "Must agree to terms and conditions" : null,
@@ -70,6 +73,7 @@ export default function RegistrationModalButton({
         terms: boolean;
         branch: string;
         year: string;
+        rollNo: string
     }) => {
         if (user)
             registerUser(
@@ -78,14 +82,15 @@ export default function RegistrationModalButton({
                 values.regEmail,
                 values.regName,
                 values.branch,
-                values.year
+                values.year,
+                Number(values.rollNo)
             )
                 .then(() => {
                     successToast("Successfully registered 🤝");
                     navigate("/submit");
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.log(error);
                     failureToast("Some unknown error occurred");
                 });
     };
@@ -141,6 +146,20 @@ export default function RegistrationModalButton({
                             onChange={(event) =>
                                 form.setFieldValue(
                                     "regNo",
+                                    event.currentTarget.value
+                                )
+                            }
+                            radius="md"
+                        />
+
+                        <TextInput
+                            required
+                            label="Roll Number"
+                            placeholder="Your Roll Number"
+                            value={form.values.rollNo}
+                            onChange={(event) =>
+                                form.setFieldValue(
+                                    "rollNo",
                                     event.currentTarget.value
                                 )
                             }
