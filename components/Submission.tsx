@@ -71,7 +71,7 @@ export default function Submission(props: Partial<DropzoneProps>) {
         "Drag images here or click to select files"
     );
     const [desc, setDesc] = useState<String>(
-        "Attach as many files as you like, each file should not exceed 5mb"
+        "Your image should not exceed 5mb"
     );
 
     const navigate = useNavigate();
