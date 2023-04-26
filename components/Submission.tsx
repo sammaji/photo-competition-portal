@@ -75,17 +75,9 @@ export default function Submission(props: Partial<DropzoneProps>) {
     );
 
     const navigate = useNavigate();
-
-    useEffect(() => {
-        // if (!user) {
-        //     navigate("/signup");
-        //     failureToast("You need to be signed in to make submissions");
-        // }
-    }, []);
-
-    // let submission_file: FileWithPath | null = null;
-
-    const [submissionFile, setSubmissionFile] = useState<FileWithPath | null>(null)
+    const [submissionFile, setSubmissionFile] = useState<FileWithPath | null>(
+        null
+    );
 
     return (
         <Container className={classes.main}>
@@ -101,7 +93,7 @@ export default function Submission(props: Partial<DropzoneProps>) {
             </Text>
             <Dropzone
                 onDrop={(files) => {
-                    setSubmissionFile(files[0])
+                    setSubmissionFile(files[0]);
                     setTitle(files[0].name);
                 }}
                 onReject={() => {
@@ -167,12 +159,17 @@ export default function Submission(props: Partial<DropzoneProps>) {
                     size="md"
                     className={classes.control}
                     onClick={() => {
-                        console.log(submissionFile)
+                        console.log(submissionFile);
                         if (submissionFile)
                             uploadImage(
                                 user?.uid || "anonymous",
                                 submissionFile
-                            ).then(() => {navigate("/submission")})
+                            ).then(() => {
+                                navigate("/submission");
+                            });
+                        else {
+                            failureToast("Please select a file");
+                        }
                     }}
                 >
                     Submit
