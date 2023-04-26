@@ -21,8 +21,6 @@ function App() {
 
     return (
         <div className="App">
-            {/* <button onClick={() => console.log(user)}>user</button>
-            <button onClick={() => signout()}>signout</button> */}
             <Flex
                 className={classes.flexCon}
                 align={"center"}

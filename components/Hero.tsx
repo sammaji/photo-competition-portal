@@ -109,6 +109,22 @@ export function Hero() {
                                         Register
                                     </RegistrationModalButton>
                                     <Button
+                                        disabled={
+                                            !(
+                                                import.meta.env
+                                                    .VITE_ALLOW_REGISTRATION ===
+                                                "true"
+                                            )
+                                        }
+                                        variant="default"
+                                        radius="xl"
+                                        size="md"
+                                        className={classes.control}
+                                        onClick={() => navigate("/submit")}
+                                    >
+                                        Submit
+                                    </Button>
+                                    <Button
                                         variant="default"
                                         radius="xl"
                                         size="md"

@@ -48,7 +48,7 @@ export default function FirebaseAuthProvider({
             ) {
                 navigate("/");
                 if (user.displayName)
-                    successToast(`Welcome ${user.displayName || "User"}`);
+                    successToast(`Welcome ${user.displayName || "User"} 👋`);
 
                 createUser(user);
             }
@@ -87,7 +87,6 @@ export default function FirebaseAuthProvider({
     };
 
     const signup = (props: FirebaseAuthParams) => {
-        console.log(props.authType);
         if (props.authType === AuthTypes.MANUAL) {
             createUserWithEmailAndPassword(auth, props.email, props.password)
                 .then((userCredential: UserCredential) => {

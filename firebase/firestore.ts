@@ -13,15 +13,11 @@ export const createUser = async (user: User) => {
             isVerified: user.emailVerified,
         },
         { merge: true }
-    ).then(() => {
-        console.log("Successfully added entries");
-    });
+    )
 };
 
 /* use this if you know a user already exists */
 const updateUser = async (user: User) => {
-    console.log("updating user into firebase...");
-
     const docRef = doc(firestore, "user", user.uid);
     setDoc(
         docRef,

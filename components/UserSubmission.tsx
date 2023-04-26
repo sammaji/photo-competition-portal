@@ -13,6 +13,8 @@ import React, { useEffect, useState } from "react";
 import { auth, storageBucket } from "../firebase/init";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import { UserCredential, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import useToasts from "../hooks/useToast";
 
 const useStyles = createStyles((theme) => ({
     buttonContainer: {
@@ -56,27 +58,27 @@ export default function UserSubmission() {
     const [loading, setLoading] = useState<boolean>(true);
     const [img, setImg] = useState<string | null>(null);
 
+    const navigate = useNavigate();
+    const { failureToast } = useToasts();
+
     useEffect(() => {
-        console.log(user?.uid);
+        if (!user) {
+            navigate("/signup");
+            failureToast("You need to be signed in to view your submissions");
+        }
+
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 listAll(ref(storageBucket, `${user?.uid || "anonymous"}`)).then(
                     (result) => {
                         result.items.forEach((item) => {
                             getDownloadURL(item).then((img_url) => {
-                                console.log(img_url);
                                 if (loading) {
                                     setLoading(false);
                                     setImg(img_url);
                                 }
                             });
                         });
-
-                        // getDownloadURL(result.items[0]).then((img_url) => {
-                        //     console.log(img_url);
-                        //     setLoading(false);
-                        //     setImg(img_url);
-                        // });
                     }
                 );
             }
@@ -95,7 +97,7 @@ export default function UserSubmission() {
             <Stack>
                 <Image src={img} height={200} width={"auto"} />
             </Stack>
-{/* 
+            {/* 
             <Button
                 variant="default"
                 radius="xl"

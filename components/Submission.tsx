@@ -17,7 +17,7 @@ import {
 import { uploadImage } from "../firebase/storage_bucket";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import useToasts from "../hooks/useToast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
@@ -35,7 +35,7 @@ const useStyles = createStyles((theme) => ({
         justifyContent: "center",
         gap: "1rem",
         maxWidth: "480px",
-        padding: "16px"
+        padding: "16px",
     },
     title: {
         width: "100%",
@@ -71,6 +71,13 @@ export default function Submission(props: Partial<DropzoneProps>) {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!user) {
+            navigate("/signup");
+            failureToast("You need to be signed in to make submissions");
+        }
+    }, []);
+
     return (
         <Container className={classes.main}>
             <Title className={classes.title}>Your Submission</Title>
@@ -86,7 +93,7 @@ export default function Submission(props: Partial<DropzoneProps>) {
                     setTitle(files[0].name);
                 }}
                 onReject={() => {
-                    setTitle("Invalid File")
+                    setTitle("Invalid File");
                     failureToast("File upload failed");
                 }}
                 maxSize={5 * 1024 ** 2}

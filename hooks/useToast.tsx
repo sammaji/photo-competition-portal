@@ -49,11 +49,29 @@ const useToasts = () => {
         });
     };
 
+    const updateLoadingToastAsFailure = (
+        message: string,
+        title: string = "",
+        id: string
+    ) => {
+        notifications.update({
+            id,
+            message,
+            title,
+            color: "red",
+            icon: <RxCross2 />,
+            autoClose: 5000,
+            withCloseButton: true,
+            loading: false,
+        });
+    };
+
     return {
         failureToast,
         successToast,
         loadingToast,
         updateLoadingToastAsSuccess,
+        updateLoadingToastAsFailure,
     };
 };
 
