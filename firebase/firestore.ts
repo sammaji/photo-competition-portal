@@ -31,6 +31,11 @@ const updateUser = async (user: User) => {
     );
 };
 
+export const updateDescription = async (user: User, desc: string) => {
+    const docRef = doc(firestore, "user", user.uid);
+    return setDoc(docRef, { desc }, { merge: true })
+}
+
 export const readUser = () => { };
 
 export const deleteUser = () => { };

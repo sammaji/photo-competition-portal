@@ -7,6 +7,7 @@ import {
     createStyles,
     Button,
     Container,
+    Textarea,
 } from "@mantine/core";
 import {
     Dropzone,
@@ -24,6 +25,8 @@ import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import useToasts from "../hooks/useToast";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "@mantine/form";
+import { updateDescription } from "../firebase/firestore";
 
 const useStyles = createStyles((theme) => ({
     buttonContainer: {
@@ -36,11 +39,12 @@ const useStyles = createStyles((theme) => ({
     main: {
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
         justifyContent: "center",
-        gap: "1rem",
+        gap: "2rem",
         maxWidth: "480px",
-        padding: "16px",
+        padding: "18px",
+        height: "fit-content",
+        marginTop: "16rem",
     },
     title: {
         width: "100%",
@@ -78,6 +82,16 @@ export default function Submission(props: Partial<DropzoneProps>) {
     const [submissionFile, setSubmissionFile] = useState<FileWithPath | null>(
         null
     );
+
+    const form = useForm({
+        initialValues: {
+            desc: "",
+        },
+    });
+
+    const handleSubmit = (values: {desc: string}) => {
+        if (user) updateDescription(user, values.desc)
+    }
 
     return (
         <Container className={classes.main}>
@@ -143,38 +157,47 @@ export default function Submission(props: Partial<DropzoneProps>) {
                     </div>
                 </Group>
             </Dropzone>
-            <div className={classes.buttonContainer}>
-                <Button
-                    radius="xl"
-                    size="md"
-                    variant="default"
-                    onClick={() => {
-                        navigate("/submission");
-                    }}
-                >
-                    View Submissions
-                </Button>
-                <Button
-                    radius="xl"
-                    size="md"
-                    className={classes.control}
-                    onClick={() => {
-                        console.log(submissionFile);
-                        if (submissionFile)
-                            uploadImage(
-                                user?.uid || "anonymous",
-                                submissionFile
-                            ).then(() => {
-                                navigate("/submission");
-                            });
-                        else {
-                            failureToast("Please select a file");
-                        }
-                    }}
-                >
-                    Submit
-                </Button>
-            </div>
+            <form onSubmit={form.onSubmit(values => handleSubmit(values))}>
+                <Textarea
+                    required
+                    w={"100%"}
+                    label="Description"
+                    placeholder="Describe your image"
+                />
+
+                <div style={{paddingTop: "2rem"}} className={classes.buttonContainer}>
+                    <Button
+                        radius="xl"
+                        size="md"
+                        variant="default"
+                        onClick={() => {
+                            navigate("/submission");
+                        }}
+                    >
+                        View Submissions
+                    </Button>
+                    <Button
+                        radius="xl"
+                        size="md"
+                        className={classes.control}
+                        onClick={() => {
+                            console.log(submissionFile);
+                            if (submissionFile)
+                                uploadImage(
+                                    user?.uid || "anonymous",
+                                    submissionFile
+                                ).then(() => {
+                                    navigate("/submission");
+                                });
+                            else {
+                                failureToast("Please select a file");
+                            }
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </div>
+            </form>
         </Container>
     );
 }
