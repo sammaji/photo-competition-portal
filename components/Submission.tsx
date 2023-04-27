@@ -77,6 +77,7 @@ export default function Submission(props: Partial<DropzoneProps>) {
     const [desc, setDesc] = useState<String>(
         "Your image should not exceed 5mb"
     );
+    const [hasDesc, setHasDesc] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const [submissionFile, setSubmissionFile] = useState<FileWithPath | null>(
@@ -89,9 +90,9 @@ export default function Submission(props: Partial<DropzoneProps>) {
         },
     });
 
-    const handleSubmit = (values: {desc: string}) => {
-        if (user) updateDescription(user, values.desc)
-    }
+    const handleSubmit = (values: { desc: string }) => {
+        if (user) updateDescription(user, values.desc);
+    };
 
     return (
         <Container className={classes.main}>
@@ -101,9 +102,10 @@ export default function Submission(props: Partial<DropzoneProps>) {
                 change the submitted image before the deadline, but note that,
                 you can submit <b>only one image</b> and the image must not use
                 any <b>filters or editing</b>, must not be a pirated image from
-                any website and it should be within the <b>limit of 5MB</b>. If
-                any of these conditions are violated, your response will not be
-                granted, and you will get disqualified from the competition.
+                any website and it should be within the <b>limit of 5MB</b>. You
+                must provide a description of the image in less than 50 words,
+                If any of these conditions are violated, your response will not
+                be granted, and you will get disqualified from the competition.
             </Text>
             <Dropzone
                 onDrop={(files) => {
@@ -157,15 +159,27 @@ export default function Submission(props: Partial<DropzoneProps>) {
                     </div>
                 </Group>
             </Dropzone>
-            <form onSubmit={form.onSubmit(values => handleSubmit(values))}>
+            <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
                 <Textarea
-                    required
+                    required={true}
                     w={"100%"}
                     label="Description"
                     placeholder="Describe your image"
+                    onChange={(event) => {
+                        form.setFieldValue("desc", event.currentTarget.value);
+                        if (
+                            event.currentTarget.value &&
+                            event.currentTarget.value.trim() !== ""
+                        )
+                            setHasDesc(true);
+                        else setHasDesc(false);
+                    }}
                 />
 
-                <div style={{paddingTop: "2rem"}} className={classes.buttonContainer}>
+                <div
+                    style={{ paddingTop: "2rem" }}
+                    className={classes.buttonContainer}
+                >
                     <Button
                         radius="xl"
                         size="md"
@@ -181,15 +195,16 @@ export default function Submission(props: Partial<DropzoneProps>) {
                         size="md"
                         className={classes.control}
                         onClick={() => {
-                            console.log(submissionFile);
-                            if (submissionFile)
+                            if (submissionFile && hasDesc) {
                                 uploadImage(
                                     user?.uid || "anonymous",
                                     submissionFile
                                 ).then(() => {
                                     navigate("/submission");
                                 });
-                            else {
+                            } else if (!hasDesc) {
+                                failureToast("Please enter a description");
+                            } else {
                                 failureToast("Please select a file");
                             }
                         }}
