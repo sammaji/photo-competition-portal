@@ -58,9 +58,9 @@ export default function RegistrationModalButton({
             regEmail: (value: string) =>
                 /^\S+@\S+$/.test(value) ? null : "Invalid email",
             regNo: (value: string) =>
-                /^\d{10,15}$/.test(value) ? null : "Invalid Registation Number",
+                /^\d{8,15}$/.test(value) ? null : "Invalid Registation Number",
             rollNo: (value: string) =>
-                /^\d{10,15}$/.test(value) ? null : "Invalid Registation Number",
+                /^\d{8,15}$/.test(value) ? null : "Invalid Registation Number",
             terms: (value: boolean) =>
                 !value ? "Must agree to terms and conditions" : null,
         },
